@@ -1,0 +1,24 @@
+version: "3"
+services:                           # 이곳에 실행하려는 컨테이너들을 정의
+  react:                            # 컨테이너 이름
+    build:                          # 현 디렉토리에 있는 Dockerfile 사용
+      context: .                    # 도커 이미지를 구성하기 위한 파일과 폴더들이 있는 우치
+      dockerfile: Dockerfile.dev    # 도커 파일 어떤 것인지 지정
+    ports:                          # 포트 맵핑 로컬포트 : 컨테이너포트
+      - "3000:3000"
+    volumes:                        # 로컬 머신에 있는 파일들 맵핑
+      - /usr/src/app/node_modules   # 이부분은 참조X
+      - ./:/usr/src/app             # 이부분은 참조
+    environment: 
+      - CHOKIDAR_USEPOLLING=true    # 윈도우에서는 리로딩할때
+    stdin_open: true                # 리엑트에 한정된 명령어 리엑트 앱을 끌 때 필요
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/app/node_modules
+      - ./:/usr/src/app
+    command: ["npm", "run", "test"]
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
